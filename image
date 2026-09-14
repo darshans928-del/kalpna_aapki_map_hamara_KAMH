@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>KAMH – Dream to Map</title>
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.114/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.114/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <style>
+    html, body, #cesiumContainer {
+      width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    // Initialize Cesium globe
+    var viewer = new Cesium.Viewer('cesiumContainer', {
+      imageryProvider: new Cesium.IonImageryProvider({ assetId: 3 }), // Bing Maps with labels
+      baseLayerPicker: true
+    });
+
+    // Load world country borders (GeoJSON)
+    Cesium.GeoJsonDataSource.load(
+      'https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json'
+    ).then(function(dataSource) {
+      viewer.dataSources.add(dataSource);
+      var entities = dataSource.entities.values;
+      for (var i = 0; i < entities.length; i++) {
+        var entity = entities[i];
+        if (entity.polygon) {
+          entity.polygon.material = Cesium.Color.YELLOW.withAlpha(0.2);
+          entity.polygon.outline = true;
+          entity.polygon.outlineColor = Cesium.Color.BLACK;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
