@@ -8,6 +8,435 @@
     🌍 Welcome to Kalpana2Map
   </h1>
 </body>
+  <!-- Logo Banner -->
+  <div style="background:#004d99; color:white; padding:20px; text-align:center; font-family:sans-serif;">
+    <h1 style="margin:0; font-size:2.5em;">🌍 Kalpana2Map</h1>
+    <h2 style="margin:0; font-size:1.5em;">कल्पना से नक्शा</h2>
+    <p style="margin-top:10px; font-size:1em;">
+      Turning imagination into maps – आपकी कल्पना, हमारा नक्शा
+    </p>
+  </div>
+
+  <!-- Globe container -->
+  <div id="cesiumContainer"></div>
+</body>
+<!-- Navigation Bar -->
+<nav style="background:#333; padding:10px; text-align:center; font-family:sans-serif;">
+  <a href="#" style="color:white; margin:0 15px; text-decoration:none; font-weight:bold;">Home</a>
+  <a href="#gallery" style="color:white; margin:0 15px; text-decoration:none; font-weight:bold;">Gallery</a>
+  <a href="#upload" style="color:white; margin:0 15px; text-decoration:none; font-weight:bold;">Upload</a>
+  <a href="#commitment" style="color:white; margin:0 15px; text-decoration:none; font-weight:bold;">Commitment</a>
+  <a href="#contact" style="color:white; margin:0 15px; text-decoration:none; font-weight:bold;">Contact</a>
+</nav>
+  <!-- Bilingual Search Bar -->
+<div style="position:absolute; top:120px; left:50%; transform:translateX(-50%);
+            background:white; padding:10px; border-radius:5px; box-shadow:0 2px 6px rgba(0,0,0,0.3);">
+  <input id="searchBox" type="text" 
+         placeholder="Type a country name... | देश का नाम लिखें..." 
+         style="padding:8px; width:300px; border:1px solid #ccc; border-radius:3px;">
+  <button onclick="searchLocation()" 
+          style="padding:8px 12px; margin-left:5px; background:#004d99; color:white; border:none; border-radius:3px;">
+    Search | खोजें
+  </button>
+</div>
+
+<script>
+  function searchLocation() {
+    var query = document.getElementById('searchBox').value;
+    if (!query) return;
+
+    // Use Cesium's geocoder service
+    var geocoder = new Cesium.GeocoderService();
+    geocoder.geocode(query).then(function(results) {
+      if (results.length > 0) {
+        viewer.camera.flyTo({
+          destination: results[0].destination
+        });
+      } else {
+        alert("Location not found | स्थान नहीं मिला");
+      }
+    });
+  }
+</script>
+<!-- Bilingual Search Bar with Voice -->
+<div style="position:absolute; top:120px; left:50%; transform:translateX(-50%);
+            background:white; padding:10px; border-radius:5px; box-shadow:0 2px 6px rgba(0,0,0,0.3); display:flex; align-items:center;">
+  <input id="searchBox" type="text" 
+         placeholder="Type a country name... | देश का नाम लिखें..." 
+         style="padding:8px; width:250px; border:1px solid #ccc; border-radius:3px;">
+  <button onclick="searchLocation()" 
+          style="padding:8px 12px; margin-left:5px; background:#004d99; color:white; border:none; border-radius:3px;">
+    Search | खोजें
+  </button>
+  <!-- Microphone Button -->
+  <button onclick="startVoiceSearch()" 
+          style="margin-left:5px; background:#e74c3c; color:white; border:none; border-radius:50%; width:40px; height:40px; font-size:18px;">
+    🎤
+  </button>
+</div>
+
+<script>
+  function searchLocation() {
+    var query = document.getElementById('searchBox').value;
+    if (!query) return;
+
+    var geocoder = new Cesium.GeocoderService();
+    geocoder.geocode(query).then(function(results) {
+      if (results.length > 0) {
+        viewer.camera.flyTo({
+          destination: results[0].destination
+        });
+      } else {
+        alert("Location not found | स्थान नहीं मिला");
+      }
+    });
+  }
+
+  // Voice Search using Web Speech API
+  function startVoiceSearch() {
+    if (!('webkitSpeechRecognition' in window)) {
+      alert("Voice search not supported in this browser.");
+      return;
+    }
+
+    var recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-IN'; // English (India), can also try 'hi-IN' for Hindi
+    recognition.start();
+
+    recognition.onresult = function(event) {
+      var transcript = event.results[0][0].transcript;
+      document.getElementById('searchBox').value = transcript;
+      searchLocation(); // auto-search after voice input
+    };
+
+    recognition.onerror = function(event) {
+      alert("Voice search error: " + event.error);
+    };
+  }
+</script>
+<!-- Bilingual Search Bar with Auto Voice -->
+<div style="position:absolute; top:120px; left:50%; transform:translateX(-50%);
+            background:white; padding:10px; border-radius:5px; box-shadow:0 2px 6px rgba(0,0,0,0.3); display:flex; align-items:center;">
+  <input id="searchBox" type="text" 
+         placeholder="Type a country name... | देश का नाम लिखें..." 
+         style="padding:8px; width:250px; border:1px solid #ccc; border-radius:3px;">
+  <button onclick="searchLocation()" 
+          style="padding:8px 12px; margin-left:5px; background:#004d99; color:white; border:none; border-radius:3px;">
+    Search | खोजें
+  </button>
+  <!-- Microphone Button -->
+  <button onclick="startVoiceSearch()" 
+          style="margin-left:5px; background:#e74c3c; color:white; border:none; border-radius:50%; width:40px; height:40px; font-size:18px;">
+    🎤
+  </button>
+</div>
+
+<script>
+  function searchLocation() {
+    var query = document.getElementById('searchBox').value;
+    if (!query) return;
+
+    var geocoder = new Cesium.GeocoderService();
+    geocoder.geocode(query).then(function(results) {
+      if (results.length > 0) {
+        viewer.camera.flyTo({
+          destination: results[0].destination
+        });
+      } else {
+        alert("Location not found | स्थान नहीं मिला");
+      }
+    });
+  }
+
+  // Voice Search with Auto Language Detection
+  function startVoiceSearch() {
+    if (!('webkitSpeechRecognition' in window)) {
+      alert("Voice search not supported in this browser.");
+      return;
+    }
+
+    var recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-IN'; // default English (India)
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.start();
+
+    recognition.onresult = function(event) {
+      var transcript = event.results[0][0].transcript;
+      
+      // Simple auto-detect: if Hindi characters are present, switch to Hindi
+      if (/[\u0900-\u097F]/.test(transcript)) {
+        recognition.lang = 'hi-IN'; // Hindi
+      }
+
+      document.getElementById('searchBox').value = transcript;
+      searchLocation(); // auto-search after voice input
+    };
+
+    recognition.onerror = function(event) {
+      alert("Voice search error: " + event.error);
+    };
+  }
+</script>
+<!-- Help Tooltip -->
+<div id="helpTooltip" 
+     style="position:fixed; bottom:20px; right:20px; background:#004d99; color:white; 
+            border-radius:50%; width:40px; height:40px; text-align:center; 
+            line-height:40px; font-size:20px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.3);">
+  ❓
+</div>
+
+<!-- Hidden Help Box -->
+<div id="helpBox" 
+     style="display:none; position:fixed; bottom:70px; right:20px; width:250px; 
+            background:white; color:#333; border:1px solid #ccc; border-radius:5px; 
+            padding:15px; box-shadow:0 2px 6px rgba(0,0,0,0.3); font-family:sans-serif; font-size:14px;">
+  <strong>🔎 How to use search:</strong><br><br>
+  • Type a country name (English or Hindi)<br>
+  • Or click 🎤 and speak<br>
+  • Globe will zoom to that location<br><br>
+  <strong>खोज का उपयोग कैसे करें:</strong><br><br>
+  • देश का नाम लिखें (अंग्रेज़ी या हिंदी)<br>
+  • या 🎤 पर क्लिक करें और बोलें<br>
+  • ग्लोब उस स्थान पर जाएगा
+</div>
+
+<script>
+  // Toggle help box visibility
+  document.getElementById('helpTooltip').onclick = function() {
+    var box = document.getElementById('helpBox');
+    box.style.display = (box.style.display === 'none') ? 'block' : 'none';
+  };
+</script>
+<!-- Getting Started Section -->
+<section id="getting-started" style="padding:40px; text-align:center; background:#f9f9f9; font-family:sans-serif;">
+  <h2 style="color:#004d99;">🚀 Getting Started with Kalpana2Map</h2>
+  <p style="max-width:700px; margin:auto; font-size:16px; line-height:1.6;">
+    Welcome to <strong>Kalpana2Map</strong> – a community GIS portal where imagination becomes maps.  
+    Here, you don’t need technical knowledge. Just share your ideas, thoughts, or hypotheses in any language, and we will help turn them into maps.
+  </p>
+  <p style="max-width:700px; margin:auto; font-size:16px; line-height:1.6; color:#444;">
+    <strong>🌍 हिंदी में:</strong> Kalpana2Map पर आपका स्वागत है – यह एक सामुदायिक GIS पोर्टल है जहाँ कल्पना नक्शों में बदलती है।  
+    यहाँ आपको तकनीकी ज्ञान की आवश्यकता नहीं है। बस अपनी कल्पना, विचार या hypothesis किसी भी भाषा में साझा करें, और हम उसे नक्शे में बदल देंगे।
+  </p>
+  <div style="margin-top:20px;">
+    <a href="#upload" style="background:#004d99; color:white; padding:10px 20px; text-decoration:none; border-radius:5px; font-weight:bold;">
+      Share Your Idea | अपनी कल्पना साझा करें
+    </a>
+  </div>
+</section>
+<!-- Step-by-Step Infographic -->
+<section id="how-it-works" style="padding:50px; text-align:center; background:#eef6ff; font-family:sans-serif;">
+  <h2 style="color:#004d99;">🛠 How Kalpana2Map Works</h2>
+  <div style="display:flex; justify-content:center; flex-wrap:wrap; margin-top:30px;">
+    
+    <!-- Step 1 -->
+    <div style="flex:1; min-width:250px; margin:20px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>1️⃣ Imagine</h3>
+      <p>Think of an idea, vision, or hypothesis.</p>
+      <p><strong>कल्पना करें:</strong> कोई विचार या परिकल्पना सोचें।</p>
+    </div>
+    
+    <!-- Step 2 -->
+    <div style="flex:1; min-width:250px; margin:20px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>2️⃣ Share</h3>
+      <p>Upload or write your idea in any language.</p>
+      <p><strong>साझा करें:</strong> अपनी कल्पना किसी भी भाषा में लिखें या अपलोड करें।</p>
+    </div>
+    
+    <!-- Step 3 -->
+    <div style="flex:1; min-width:250px; margin:20px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>3️⃣ Map</h3>
+      <p>We turn your imagination into maps.</p>
+      <p><strong>नक्शा बनाएं:</strong> हम आपकी कल्पना को नक्शे में बदलते हैं।</p>
+    </div>
+    
+  </div>
+</section>
+<!-- Flow Diagram Section -->
+<section id="flow-guide" style="padding:50px; text-align:center; background:#f0f8ff; font-family:sans-serif;">
+  <h2 style="color:#004d99;">🔄 Your Journey on Kalpana2Map</h2>
+  
+  <div style="display:flex; justify-content:center; align-items:center; flex-wrap:wrap; margin-top:40px;">
+    
+    <!-- Step 1 -->
+    <div style="flex:1; min-width:200px; margin:10px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>1️⃣ Imagine</h3>
+      <p>Think of an idea, vision, or hypothesis.</p>
+      <p><strong>कल्पना करें:</strong> कोई विचार या परिकल्पना सोचें।</p>
+    </div>
+    
+    <!-- Arrow -->
+    <div style="font-size:30px; margin:10px; color:#004d99;">➡️</div>
+    
+    <!-- Step 2 -->
+    <div style="flex:1; min-width:200px; margin:10px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>2️⃣ Share</h3>
+      <p>Upload or write your idea in any language.</p>
+      <p><strong>साझा करें:</strong> अपनी कल्पना किसी भी भाषा में लिखें या अपलोड करें।</p>
+    </div>
+    
+    <!-- Arrow -->
+    <div style="font-size:30px; margin:10px; color:#004d99;">➡️</div>
+    
+    <!-- Step 3 -->
+    <div style="flex:1; min-width:200px; margin:10px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>3️⃣ Map</h3>
+      <p>We turn your imagination into maps.</p>
+      <p><strong>नक्शा बनाएं:</strong> हम आपकी कल्पना को नक्शे में बदलते हैं।</p>
+    </div>
+    
+  </div>
+</section>
+<!-- Call-to-Action Banner -->
+<section id="cta-banner" style="padding:60px; text-align:center; background:#004d99; color:white; font-family:sans-serif;">
+  <h2 style="font-size:2em; margin-bottom:20px;">🌍 Start Your Journey with Kalpana2Map</h2>
+  <p style="font-size:1.2em; max-width:700px; margin:auto; line-height:1.6;">
+    Share your imagination today and see it transformed into maps.  
+    <br><strong>आज ही अपनी कल्पना साझा करें और उसे नक्शे में बदलते देखें।</strong>
+  </p>
+  <div style="margin-top:30px;">
+    <a href="#upload" 
+       style="background:#ffcc00; color:#004d99; padding:15px 30px; text-decoration:none; 
+              border-radius:8px; font-weight:bold; font-size:1.2em;">
+      🚀 Share Your Idea | अपनी कल्पना साझा करें
+    </a>
+  </div>
+</section>
+
+</body>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Kalpana2Map – Dream to Map</title>
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.114/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.114/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <style>
+    html, body {
+      scroll-behavior: smooth; /* enables smooth scrolling */
+      margin: 0; padding: 0;
+      font-family: sans-serif;
+    }
+    #cesiumContainer {
+      width: 100%; height: 600px; margin: 0; padding: 0; overflow: hidden;
+    }
+    nav {
+      background:#333; padding:10px; text-align:center;
+    }
+    nav a {
+      color:white; margin:0 15px; text-decoration:none; font-weight:bold;
+    }
+    section {
+      padding:50px; text-align:center;
+    }
+    section:nth-child(even) {
+      background:#f4f4f4;
+    }
+  </style>
+</head>
+<body>
+  <!-- Logo Banner -->
+  <div style="background:#004d99; color:white; padding:20px; text-align:center;">
+    <h1 style="margin:0; font-size:2.5em;">🌍 Kalpana2Map</h1>
+    <h2 style="margin:0; font-size:1.5em;">कल्पना से नक्शा</h2>
+    <p style="margin-top:10px;">Turning imagination into maps – आपकी कल्पना, हमारा नक्शा</p>
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#upload">Upload</a>
+    <a href="#commitment">Commitment</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <!-- Globe Section -->
+  <section id="home">
+    <div id="cesiumContainer"></div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section id="gallery">
+    <h2>Gallery</h2>
+    <p>Explore maps created by the community.</p>
+  </section>
+
+  <!-- Upload Section -->
+  <section id="upload">
+    <h2>Upload</h2>
+    <p>Share your ideas or files to turn imagination into maps.</p>
+  </section>
+
+  <!-- Commitment Section -->
+  <section id="commitment">
+    <h2>Our Commitment</h2>
+    <p>We invite you to share your imagination. We will turn it into maps.</p>
+    <p>हम आपको आमंत्रित करते हैं कि आप अपनी कल्पना साझा करें। हम उसे नक्शे में बदलेंगे।</p>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <h2>Contact Us</h2>
+    <p>Email: info@kalpana2map.org</p>
+  </section>
+
+  <!-- Cesium Globe Script -->
+  <script>
+    var viewer = new Cesium.Viewer('cesiumContainer', {
+      imageryProvider: new Cesium.IonImageryProvider({ assetId: 3 }), // Bing Maps with labels
+      baseLayerPicker: true
+    });
+
+    Cesium.GeoJsonDataSource.load(
+      'https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json'
+    ).then(function(dataSource) {
+      viewer.dataSources.add(dataSource);
+      var entities = dataSource.entities.values;
+      for (var i = 0; i < entities.length; i++) {
+        var entity = entities[i];
+        if (entity.polygon) {
+          entity.polygon.material = Cesium.Color.YELLOW.withAlpha(0.2);
+          entity.polygon.outline = true;
+          entity.polygon.outlineColor = Cesium.Color.BLACK;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+<!-- Search Bar -->
+<div style="position:absolute; top:120px; left:50%; transform:translateX(-50%);
+            background:white; padding:10px; border-radius:5px; box-shadow:0 2px 6px rgba(0,0,0,0.3);">
+  <input id="searchBox" type="text" placeholder="Type a country name..." 
+         style="padding:8px; width:250px; border:1px solid #ccc; border-radius:3px;">
+  <button onclick="searchLocation()" 
+          style="padding:8px 12px; margin-left:5px; background:#004d99; color:white; border:none; border-radius:3px;">
+    Search
+  </button>
+</div>
+
+<script>
+  function searchLocation() {
+    var query = document.getElementById('searchBox').value;
+    if (!query) return;
+
+    // Use Cesium's geocoder service
+    var geocoder = new Cesium.GeocoderService();
+    geocoder.geocode(query).then(function(results) {
+      if (results.length > 0) {
+        viewer.camera.flyTo({
+          destination: results[0].destination
+        });
+      } else {
+        alert("Location not found.");
+      }
+    });
+  }
+</script>
+
   <script src="https://cesium.com/downloads/cesiumjs/releases/1.120/Build/Cesium/Cesium.js"></script>
   <link href="https://cesium.com/downloads/cesiumjs/releases/1.120/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
   <style>
@@ -151,3 +580,257 @@
   </script>
 </body>
 </html>
+<!-- Timeline Section -->
+<section id="timeline" style="padding:60px; background:#eef6ff; font-family:sans-serif;">
+  <h2 style="text-align:center; color:#004d99;">📜 Kalpana2Map Journey</h2>
+  
+  <div style="max-width:800px; margin:auto; position:relative; padding-left:40px;">
+    
+    <!-- Timeline line -->
+    <div style="position:absolute; left:20px; top:0; bottom:0; width:4px; background:#004d99;"></div>
+    
+    <!-- 2026 -->
+    <div style="margin-bottom:40px; position:relative;">
+      <div style="position:absolute; left:-5px; top:0; width:20px; height:20px; background:#004d99; border-radius:50%;"></div>
+      <h3 style="color:#004d99;">2026 – Idea Born</h3>
+      <p>Kalpana2Map was conceived as a portal to turn imagination into maps.</p>
+      <p><strong>2026 – विचार जन्मा:</strong> Kalpana2Map को एक ऐसे पोर्टल के रूप में सोचा गया जहाँ कल्पना नक्शों में बदल सके।</p>
+    </div>
+    
+    <!-- 2027 -->
+    <div style="margin-bottom:40px; position:relative;">
+      <div style="position:absolute; left:-5px; top:0; width:20px; height:20px; background:#004d99; border-radius:50%;"></div>
+      <h3 style="color:#004d99;">2027 – First Maps</h3>
+      <p>The first community maps were created from shared ideas.</p>
+      <p><strong>2027 – पहले नक्शे:</strong> साझा की गई कल्पनाओं से पहले सामुदायिक नक्शे बनाए गए।</p>
+    </div>
+    
+    <!-- 2028 -->
+    <div style="margin-bottom:40px; position:relative;">
+      <div style="position:absolute; left:-5px; top:0; width:20px; height:20px; background:#004d99; border-radius:50%;"></div>
+      <h3 style="color:#004d99;">2028 – Community Expansion</h3>
+      <p>Kalpana2Map grew into a vibrant community of contributors across languages.</p>
+      <p><strong>2028 – समुदाय का विस्तार:</strong> Kalpana2Map विभिन्न भाषाओं में योगदानकर्ताओं का एक जीवंत समुदाय बन गया।</p>
+    </div>
+    
+    <!-- Future Vision -->
+    <div style="margin-bottom:40px; position:relative;">
+      <div style="position:absolute; left:-5px; top:0; width:20px; height:20px; background:#004d99; border-radius:50%;"></div>
+      <h3 style="color:#004d99;">Future – Global Imagination</h3>
+      <p>Our vision is to connect imaginations worldwide and map them together.</p>
+      <p><strong>भविष्य – वैश्विक कल्पना:</strong> हमारा लक्ष्य है कि दुनिया भर की कल्पनाओं को जोड़कर उन्हें नक्शों में उतारा जाए।</p>
+    </div>
+    
+  </div>
+</section>
+<!-- Future Roadmap Section -->
+<section id="future-roadmap" style="padding:60px; background:#fffbe6; font-family:sans-serif; text-align:center;">
+  <h2 style="color:#004d99;">🌟 Future Roadmap</h2>
+  <p style="max-width:800px; margin:auto; font-size:16px; line-height:1.8; color:#333;">
+    Kalpana2Map is not just about today — it’s about building the future of community mapping.  
+    Here are our upcoming goals:
+  </p>
+  
+  <div style="display:flex; justify-content:center; flex-wrap:wrap; margin-top:40px;">
+    
+    <!-- Goal 1 -->
+    <div style="flex:1; min-width:250px; margin:15px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>🤖 AI‑Powered Mapping</h3>
+      <p>Integrating artificial intelligence to automatically visualize ideas.</p>
+      <p><strong>एआई आधारित नक्शे:</strong> कृत्रिम बुद्धिमत्ता से विचारों को स्वतः नक्शों में बदलना।</p>
+    </div>
+    
+    <!-- Goal 2 -->
+    <div style="flex:1; min-width:250px; margin:15px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>🏫 School Collaborations</h3>
+      <p>Partnering with schools to teach imagination‑driven mapping.</p>
+      <p><strong>विद्यालय सहयोग:</strong> स्कूलों के साथ मिलकर कल्पना आधारित नक्शा शिक्षा।</p>
+    </div>
+    
+    <!-- Goal 3 -->
+    <div style="flex:1; min-width:250px; margin:15px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>🌱 Eco‑Friendly Projects</h3>
+      <p>Mapping ideas for sustainable living and green innovations.</p>
+      <p><strong>पर्यावरण‑अनुकूल परियोजनाएँ:</strong> टिकाऊ जीवन और हरित नवाचारों के लिए नक्शे।</p>
+    </div>
+    
+    <!-- Goal 4 -->
+    <div style="flex:1; min-width:250px; margin:15px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>🌍 Global Community</h3>
+      <p>Expanding Kalpana2Map to connect imaginations worldwide.</p>
+      <p><strong>वैश्विक समुदाय:</strong> दुनिया भर की कल्पनाओं को जोड़ना।</p>
+    </div>
+    
+  </div>
+</section>
+<!-- Join Us Section -->
+<section id="join-us" style="padding:60px; background:#eaf7ea; font-family:sans-serif; text-align:center;">
+  <h2 style="color:#004d99;">🤝 Join Us</h2>
+  <p style="max-width:800px; margin:auto; font-size:16px; line-height:1.8; color:#333;">
+    Kalpana2Map thrives on community participation. Here’s how you can be part of the journey:
+    <br><strong>Kalpana2Map समुदाय की भागीदारी से आगे बढ़ता है। आप इस यात्रा का हिस्सा ऐसे बन सकते हैं:</strong>
+  </p>
+  
+  <div style="display:flex; justify-content:center; flex-wrap:wrap; margin-top:40px;">
+    
+    <!-- Volunteer -->
+    <div style="flex:1; min-width:220px; margin:15px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>🙋 Volunteer</h3>
+      <p>Offer your time to help with mapping projects.</p>
+      <p><strong>स्वयंसेवक बनें:</strong> नक्शा परियोजनाओं में अपना समय दें।</p>
+    </div>
+    
+    <!-- Collaborate -->
+    <div style="flex:1; min-width:220px; margin:15px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>🤝 Collaborate</h3>
+      <p>Partner with us for schools, NGOs, or research.</p>
+      <p><strong>सहयोग करें:</strong> स्कूलों, एनजीओ या शोध के लिए हमारे साथ जुड़ें।</p>
+    </div>
+    
+    <!-- Donate -->
+    <div style="flex:1; min-width:220px; margin:15px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>💝 Donate</h3>
+      <p>Support our mission with contributions.</p>
+      <p><strong>दान करें:</strong> हमारे मिशन को सहयोग दें।</p>
+    </div>
+    
+    <!-- Share Ideas -->
+    <div style="flex:1; min-width:220px; margin:15px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>💡 Share Ideas</h3>
+      <p>Upload your imagination and see it mapped.</p>
+      <p><strong>विचार साझा करें:</strong> अपनी कल्पना अपलोड करें और नक्शे में देखें।</p>
+    </div>
+    
+  </div>
+  
+  <div style="margin-top:30px;">
+    <a href="#upload" 
+       style="background:#004d99; color:white; padding:15px 30px; text-decoration:none; 
+              border-radius:8px; font-weight:bold; font-size:1.1em;">
+      🚀 Get Started | शुरुआत करें
+    </a>
+  </div>
+</section>
+
+<!-- Footer Bar -->
+<footer style="background:#222; color:#ccc; padding:30px; text-align:center; font-family:sans-serif;">
+  <div style="margin-bottom:15px;">
+    <a href="#about" style="color:#ccc; margin:0 15px; text-decoration:none;">About</a>
+    <a href="#privacy" style="color:#ccc; margin:0 15px; text-decoration:none;">Privacy</a>
+    <a href="#terms" style="color:#ccc; margin:0 15px; text-decoration:none;">Terms</a>
+    <a href="#contact" style="color:#ccc; margin:0 15px; text-decoration:none;">Contact</a>
+  </div>
+  <div style="margin-bottom:15px;">
+    <!-- Social Media Icons -->
+    <a href="https://facebook.com" target="_blank" style="color:#ccc; margin:0 10px; font-size:20px;">📘</a>
+    <a href="https://twitter.com" target="_blank" style="color:#ccc; margin:0 10px; font-size:20px;">🐦</a>
+    <a href="https://instagram.com" target="_blank" style="color:#ccc; margin:0 10px; font-size:20px;">📸</a>
+    <a href="https://linkedin.com" target="_blank" style="color:#ccc; margin:0 10px; font-size:20px;">💼</a>
+  </div>
+  <p style="font-size:14px; color:#777;">
+    © 2026 Kalpana2Map. All rights reserved.  
+    <br>Powered by imagination → maps.
+  </p>
+</footer>
+<!-- About Section -->
+<section id="about" style="padding:60px; text-align:center; background:#fafafa; font-family:sans-serif;">
+  <h2 style="color:#004d99;">ℹ️ About Kalpana2Map</h2>
+  <p style="max-width:800px; margin:auto; font-size:16px; line-height:1.8; color:#333;">
+    <strong>Kalpana2Map</strong> was born from a simple idea: imagination should not remain abstract.  
+    Every thought, vision, or hypothesis deserves to be visualized on a map.  
+    This portal is a bridge between creativity and geography, where anyone — regardless of technical knowledge — can share their ideas and see them transformed into meaningful maps.
+  </p>
+  <p style="max-width:800px; margin:auto; font-size:16px; line-height:1.8; color:#444; margin-top:20px;">
+    <strong>🌍 हिंदी में:</strong> <strong>Kalpana2Map</strong> एक सरल विचार से जन्मा – कल्पना को केवल सोच तक सीमित नहीं रहना चाहिए।  
+    हर विचार, दृष्टि या परिकल्पना नक्शे पर दिखने योग्य है।  
+    यह पोर्टल रचनात्मकता और भूगोल के बीच एक सेतु है, जहाँ कोई भी व्यक्ति — चाहे उसे तकनीकी ज्ञान हो या न हो — अपनी कल्पना साझा कर सकता है और उसे सार्थक नक्शों में बदलते देख सकता है।
+  </p>
+  <div style="margin-top:30px;">
+    <h3 style="color:#004d99;">✨ Our Mission</h3>
+    <p style="max-width:700px; margin:auto; font-size:15px; line-height:1.6;">
+      To democratize mapping by making it accessible, inclusive, and driven by imagination.  
+      <br><strong>हमारा मिशन:</strong> नक्शा बनाने की प्रक्रिया को सरल, समावेशी और कल्पना‑आधारित बनाना।
+    </p>
+  </div>
+  <div style="margin-top:30px;">
+    <h3 style="color:#004d99;">🌟 Our Vision</h3>
+    <p style="max-width:700px; margin:auto; font-size:15px; line-height:1.6;">
+      A world where every idea, no matter how small, can find its place on a map.  
+      <br><strong>हमारी दृष्टि:</strong> एक ऐसी दुनिया जहाँ हर विचार, चाहे कितना भी छोटा क्यों न हो, नक्शे पर अपनी जगह पा सके।
+    </p>
+  </div>
+</section>
+<!-- Partners & Supporters Section -->
+<section id="partners" style="padding:60px; background:#f0f0f0; font-family:sans-serif; text-align:center;">
+  <h2 style="color:#004d99;">🤝 Partners & Supporters</h2>
+  <p style="max-width:800px; margin:auto; font-size:16px; line-height:1.8; color:#333;">
+    Kalpana2Map is proud to collaborate with schools, NGOs, and organizations that believe in imagination‑driven mapping.  
+    <br><strong>Kalpana2Map गर्व से उन स्कूलों, एनजीओ और संगठनों के साथ सहयोग करता है जो कल्पना आधारित नक्शों में विश्वास रखते हैं।</strong>
+  </p>
+  
+  <div style="display:flex; justify-content:center; flex-wrap:wrap; margin-top:40px;">
+    
+    <!-- Partner 1 -->
+    <div style="flex:1; min-width:200px; margin:15px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>🏫 Green Valley School</h3>
+      <p>Encouraging students to map their imagination.</p>
+      <p><strong>ग्रीन वैली स्कूल:</strong> छात्रों को अपनी कल्पना नक्शों में उतारने के लिए प्रेरित करता है।</p>
+    </div>
+    
+    <!-- Partner 2 -->
+    <div style="flex:1; min-width:200px; margin:15px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>🌱 EcoFuture NGO</h3>
+      <p>Supporting eco‑friendly mapping projects.</p>
+      <p><strong>इकोफ्यूचर एनजीओ:</strong> पर्यावरण‑अनुकूल नक्शा परियोजनाओं का समर्थन करता है।</p>
+    </div>
+    
+    <!-- Partner 3 -->
+    <div style="flex:1; min-width:200px; margin:15px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>📊 Research Hub</h3>
+      <p>Collaborating on data‑driven mapping innovations.</p>
+      <p><strong>रिसर्च हब:</strong> डेटा आधारित नक्शा नवाचारों पर सहयोग करता है।</p>
+    </div>
+    
+    <!-- Partner 4 -->
+    <div style="flex:1; min-width:200px; margin:15px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <h3>🌍 Global Connect</h3>
+      <p>Expanding Kalpana2Map’s reach worldwide.</p>
+      <p><strong>ग्लोबल कनेक्ट:</strong> Kalpana2Map की पहुँच को विश्वभर में बढ़ाता है।</p>
+    </div>
+    
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section id="testimonials" style="padding:60px; background:#f9f9f9; font-family:sans-serif; text-align:center;">
+  <h2 style="color:#004d99;">💬 Community Testimonials</h2>
+  <p style="max-width:800px; margin:auto; font-size:16px; line-height:1.8; color:#333;">
+    Hear from people who have shared their imagination with Kalpana2Map:
+    <br><strong>उन लोगों की बातें सुनें जिन्होंने अपनी कल्पना Kalpana2Map के साथ साझा की:</strong>
+  </p>
+  
+  <div style="display:flex; justify-content:center; flex-wrap:wrap; margin-top:40px;">
+    
+    <!-- Testimonial 1 -->
+    <div style="flex:1; min-width:250px; margin:15px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <p style="font-style:italic; color:#444;">“I shared my idea about local farming, and within days I saw it mapped beautifully. It felt magical.”</p>
+      <p><strong>– Ananya, Community Member</strong></p>
+      <p style="font-style:italic; color:#444;">“मैंने स्थानीय खेती का विचार साझा किया और कुछ ही दिनों में उसे सुंदर नक्शे में देखा। यह जादुई लगा।”</p>
+    </div>
+    
+    <!-- Testimonial 2 -->
+    <div style="flex:1; min-width:250px; margin:15px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <p style="font-style:italic; color:#444;">“Kalpana2Map made me realize that even small ideas can have a big impact when visualized.”</p>
+      <p><strong>– Rahul, Teacher</strong></p>
+      <p style="font-style:italic; color:#444;">“Kalpana2Map ने मुझे यह एहसास दिलाया कि छोटे विचार भी नक्शे पर दिखने पर बड़ा असर डाल सकते हैं।”</p>
+    </div>
+    
+    <!-- Testimonial 3 -->
+    <div style="flex:1; min-width:250px; margin:15px; padding:20px; background:white; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+      <p style="font-style:italic; color:#444;">“This platform gave my students a chance to see their imagination come alive on maps.”</p>
+      <p><strong>– Meera, Educator</strong></p>
+      <p style="font-style:italic; color:#444;">“इस मंच ने मेरे छात्रों को अपनी कल्पना को नक्शों पर जीवंत होते देखने का अवसर दिया।”</p>
+    </div>
+    
+  </div>
+</section>
