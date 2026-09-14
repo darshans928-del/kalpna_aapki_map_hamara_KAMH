@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>UGC GIS Portal</title>
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.120/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.120/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 0; }
+    #cesiumContainer { width: 100%; height: 100vh; }
+    #controls {
+      position: absolute; top: 10px; left: 10px;
+      background: white; padding: 10px; border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      font-family: Arial, sans-serif;
+    }
+    #gallery {
+      position: absolute; top: 120px; left: 10px;
+      background: white; padding: 10px; border-radius: 5px;
+      max-height: 300px; overflow-y: auto; width: 250px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      font-family: Arial, sans-serif;
+    }
+    #gallery h3 { margin-top: 0; }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+
+  <!-- Controls -->
+  <div id="controls">
+    <input type="file" id="fileInput" accept=".kml,.kmz,.geojson,.json" />
+    <button onclick="loadFile()">Upload & Visualize</button>
+    <button onclick="downloadFile()">Download Last Upload</button>
+    <a href="YOUR_GOOGLE_DRIVE_FOLDER_LINK" target="_blank">
+      <button>Community Uploads</button>
+    </a>
+    <input type="text" id="driveLink" placeholder="Paste Google Drive file link" />
+    <button onclick="loadDriveFile()">Load from Drive</button>
+  </div>
+
+  <!-- Gallery -->
+  <div id="gallery">
+    <h3>Community Map Gallery</h3>
+    <ul id="fileList"></ul>
+  </div>
+
+  <script>
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      imageryProvider: new Cesium.IonImageryProvider({ assetId: 2 }), // Bing Maps imagery
+      baseLayerPicker: false
+    });
+
+    let lastFileContent = null;
+    let lastFileName = null;
+
+    // Upload local file
+    function loadFile() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      lastFileName = file.name;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        lastFileContent = e.target.result;
+
+        if (file.name.endsWith(".kml") || file.name.endsWith(".kmz")) {
+          Cesium.KmlDataSource.load(lastFileContent, {
+            camera: viewer.scene.camera,
+            canvas: viewer.scene.canvas
+          }).then(ds => { viewer.dataSources.add(ds); viewer.zoomTo(ds); });
+        } else if (file.name.endsWith(".geojson") || file.name.endsWith(".json")) {
+          const geojson = JSON.parse(atob(lastFileContent.split(",")[1]));
+          Cesium.GeoJsonDataSource.load(geojson).then(ds => { viewer.dataSources.add(ds); viewer.zoomTo(ds); });
+        } else {
+          alert("Unsupported file type. Only KML/KMZ/GeoJSON allowed.");
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Download last uploaded file
+    function downloadFile() {
+      if (!lastFileContent || !lastFileName) {
+        alert("No file uploaded yet!");
+        return;
+      }
+      const link = document.createElement('a');
+      link.href = lastFileContent;
+      link.download = lastFileName;
+      link.click();
+    }
+
+    // Load file from Google Drive link
+    function loadDriveFile() {
+      const link = document.getElementById('driveLink').value;
+      if (!link) return;
+      const fileId = link.match(/[-\w]{25,}/)[0]; // extract ID
+      const directLink = `https://drive.google.com/uc?export=download&id=${fileId}`;
+
+      if (link.endsWith(".kml") || link.endsWith(".kmz")) {
+        Cesium.KmlDataSource.load(directLink, { camera: viewer.scene.camera, canvas: viewer.scene.canvas })
+          .then(ds => { viewer.dataSources.add(ds); viewer.zoomTo(ds); });
+      } else if (link.endsWith(".geojson") || link.endsWith(".json")) {
+        Cesium.GeoJsonDataSource.load(directLink).then(ds => { viewer.dataSources.add(ds); viewer.zoomTo(ds); });
+      } else {
+        alert("Unsupported file type. Only KML/KMZ/GeoJSON allowed.");
+      }
+    }
+
+    // Gallery from Google Drive API
+    const folderId = "YOUR_FOLDER_ID"; 
+    const apiKey = "YOUR_API_KEY";
+
+    async function loadGallery() {
+      const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}' in parents and (mimeType='application/vnd.google-earth.kml+xml' or mimeType='application/vnd.google-earth.kmz' or mimeType='application/json')&key=${apiKey}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const list = document.getElementById("fileList");
+      list.innerHTML = "";
+
+      data.files.forEach(file => {
+        const li = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = `https://drive.google.com/uc?export=download&id=${file.id}`;
+        link.textContent = file.name;
+        link.onclick = function(e) {
+          e.preventDefault();
+          if (file.name.endsWith(".kml") || file.name.endsWith(".kmz")) {
+            Cesium.KmlDataSource.load(link.href, { camera: viewer.scene.camera, canvas: viewer.scene.canvas })
+              .then(ds => { viewer.dataSources.add(ds); viewer.zoomTo(ds); });
+          } else if (file.name.endsWith(".geojson") || file.name.endsWith(".json")) {
+            Cesium.GeoJsonDataSource.load(link.href).then(ds => { viewer.dataSources.add(ds); viewer.zoomTo(ds); });
+          } else {
+            alert("Unsupported file type. Only KML/KMZ/GeoJSON allowed.");
+          }
+        };
+        li.appendChild(link);
+        list.appendChild(li);
+      });
+    }
+
+    loadGallery();
+  </script>
+</body>
+</html>
